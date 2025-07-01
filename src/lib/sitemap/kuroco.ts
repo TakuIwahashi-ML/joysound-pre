@@ -41,7 +41,7 @@ class KurocoClient {
 
   private async request<T>(
     endpoint: string,
-    params?: Record<string, any>
+    params?: Record<string, string | number | boolean>
   ): Promise<KurocoApiResponse<T>> {
     const url = new URL(`${this.baseUrl}${endpoint}`);
 
