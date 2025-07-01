@@ -3,7 +3,7 @@ import { type Information, getInformationData } from '@/app/api/kuroco/informati
 // メインページコンポーネント（サーバーサイドレンダリング）
 export default async function SamplePagesPage() {
   // 🎯 統合版：1つの関数呼び出しでエラーハンドリング完了
-  const { data: informationList, error } = await getInformationData();
+  const { data: informationData, error } = await getInformationData();
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -17,9 +17,9 @@ export default async function SamplePagesPage() {
       )}
 
       {/* Information一覧 */}
-      {!error && informationList.length > 0 && (
+      {!error && informationData.length > 0 && (
         <div className="space-y-6">
-          {informationList.map((info: Information, index: number) => (
+          {informationData.map((info: Information, index: number) => (
             <div
               key={index}
               className="bg-white border border-gray-200 rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow"
@@ -56,7 +56,7 @@ export default async function SamplePagesPage() {
       )}
 
       {/* データが見つからない場合 */}
-      {!error && informationList.length === 0 && (
+      {!error && informationData.length === 0 && (
         <div className="text-center py-8">
           <p className="text-gray-600">Informationが見つかりませんでした。</p>
         </div>
