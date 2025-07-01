@@ -7,6 +7,7 @@
 
 # 技術スタック (Technology Stack)
 
+- **パッケージ管理:** pnpm
 - **フレームワーク:** Next.js 15.x (App Router)
 - **言語:** TypeScript
 - **状態管理:** Redux（Redux Toolkit）
