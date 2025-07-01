@@ -67,7 +67,7 @@ store/
 
 # 主要な機能とロジック (Key Features and Logic)
 
-- **データ取得:** 既存のバックエンド API と、Kuroco CMS から API 経由でデータを取得します。クライアントは`lib/kuroco.ts`に実装されています。
+- **データ取得:** 既存のバックエンド API と、Kuroco CMS から API 経由でデータを取得します。クライアントはRedux(rtkQuery)で取得します。`store/services/`に実装されています。
 - **認証:** 未実装です。（または、〇〇というライブラリで実装）
 - **状態管理:** グローバルな状態は Redux（Redux Toolkit）で管理します。ストアは`store/`ディレクトリにあります。
 
@@ -76,17 +76,21 @@ store/
 - **リンター/フォーマッター:** ESLint と Prettier を使用しています。設定はリポジトリのルートにある設定ファイルに従ってください。
 - **コンポーネント:** 関数コンポーネントと React Hooks を使用します。クラスコンポーネントは使用しません。
 - **命名規則:** コンポーネントはパスカルケース (`MyComponent`)、関数や変数はキャメルケース (`myFunction`) です。
+  インターフェース定義は、Iプレフィックを付与します。（`IInterfaceName`）。
 
 # API 仕様の概要 (API Overview)
 
 - **CMS エンドポイント:**
   ※以下CMSのエンドポイントは仮です。未定なのでのちほど修正します。
-  - `blogs`: ブログ記事の一覧・詳細
-  - `artists`: アーティスト情報
+  - `information`: お知らせ情報
+
 - **主要なフィールド:**
-  - ブログ記事は `title`, `content` (リッチエディタ), `slug`, `eyecatch` (画像) のフィールドを持ちます。
+  <!-- - ブログ記事は `title`, `content` (リッチエディタ), `slug`, `eyecatch` (画像) のフィールドを持ちます。 -->
 
 # 環境変数 (Environment Variables)
+
+- local：`.env.local`
+- production：`.env.production`
 
 **注意：実際のキーやパスワードなどの機密情報は絶対に記載しないでください。変数名とその役割だけを記述します。**
 

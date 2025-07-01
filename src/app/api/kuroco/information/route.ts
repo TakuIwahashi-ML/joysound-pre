@@ -5,18 +5,18 @@ import { fetchKurocoAPI } from '..';
 const INFORMATION_ENDPOINT = '/rcms-api/1/information';
 
 // APIレスポンスとページ側で共通使用するInformation型
-export interface Information {
+export interface IInformation {
   'information-text': string[];
   'information-link': string[];
 }
 
 interface KurocoInformationResponse {
-  list: Information[];
+  list: IInformation[];
 }
 
 // 🎯 Information一覧取得（APIレスポンスをそのまま活用）
 export async function getInformationData(): Promise<{
-  data: Information[];
+  data: IInformation[];
   error?: string;
 }> {
   const result = await fetchKurocoAPI<KurocoInformationResponse>(INFORMATION_ENDPOINT, {
@@ -31,7 +31,7 @@ export async function getInformationData(): Promise<{
   }
 
   // 🎯 必要なデータのみを抽出（名前はそのまま維持）
-  const filteredData: Information[] = result.data.list.map((item) => ({
+  const filteredData: IInformation[] = result.data.list.map((item) => ({
     'information-text': item['information-text'] || [],
     'information-link': item['information-link'] || [],
   }));

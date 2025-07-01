@@ -1,4 +1,4 @@
-import { type Information, getInformationData } from '@/app/api/kuroco/information/route';
+import { type IInformation, getInformationData } from '@/app/api/kuroco/information/route';
 
 // メインページコンポーネント（サーバーサイドレンダリング）
 export default async function SamplePagesPage() {
@@ -19,7 +19,7 @@ export default async function SamplePagesPage() {
       {/* Information一覧 */}
       {!error && informationData.length > 0 && (
         <div className="space-y-6">
-          {informationData.map((info: Information, index: number) => (
+          {informationData.map((info: IInformation, index: number) => (
             <div
               key={index}
               className="bg-white border border-gray-200 rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow"
