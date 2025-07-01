@@ -27,7 +27,7 @@ export default async function SamplePagesPage() {
               {/* Information Text */}
               <div className="mb-4">
                 <h3 className="text-lg font-semibold text-gray-800 mb-2">📝 テキスト情報</h3>
-                {info.text?.map((text, textIndex) => (
+                {info['information-text']?.map((text, textIndex) => (
                   <div key={textIndex} className="mb-2">
                     <p className="text-gray-600 bg-gray-50 p-3 rounded">{text}</p>
                   </div>
@@ -37,7 +37,7 @@ export default async function SamplePagesPage() {
               {/* Information Links */}
               <div className="mb-4">
                 <h3 className="text-lg font-semibold text-gray-800 mb-2">🔗 リンク情報</h3>
-                {info.links?.map((link, linkIndex) => (
+                {info['information-link']?.map((link, linkIndex) => (
                   <div key={linkIndex} className="mb-2">
                     <a
                       href={link}

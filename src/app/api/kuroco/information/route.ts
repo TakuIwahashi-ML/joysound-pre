@@ -1,31 +1,25 @@
 // Kuroco CMS Information API
 import { fetchKurocoAPI } from '..';
 
-// ページ側で使用する簡潔なInformation型（必要なデータのみ）
-export interface Information {
-  text: string[];
-  links: string[];
-}
+// エンドポイント定数
+const INFORMATION_ENDPOINT = '/rcms-api/1/information';
 
-// Kuroco APIの実際のレスポンス型（大きなJSON）
-interface KurocoInformationItem {
+// APIレスポンスとページ側で共通使用するInformation型
+export interface Information {
   'information-text': string[];
   'information-link': string[];
-  // 実際にはもっと多くのフィールドがありますが、
-  // 必要な部分のみ型定義
-  [key: string]: any; // その他のフィールド
 }
 
 interface KurocoInformationResponse {
-  list: KurocoInformationItem[];
+  list: Information[];
 }
 
-// 🎯 Information一覧取得（必要なデータのみ抽出）
+// 🎯 Information一覧取得（APIレスポンスをそのまま活用）
 export async function getInformationData(): Promise<{
   data: Information[];
   error?: string;
 }> {
-  const result = await fetchKurocoAPI<KurocoInformationResponse>('/rcms-api/1/information', {
+  const result = await fetchKurocoAPI<KurocoInformationResponse>(INFORMATION_ENDPOINT, {
     list: [],
   });
 
@@ -36,10 +30,10 @@ export async function getInformationData(): Promise<{
     };
   }
 
-  // 🎯 必要なデータのみを抽出して整形
+  // 🎯 必要なデータのみを抽出（名前はそのまま維持）
   const filteredData: Information[] = result.data.list.map((item) => ({
-    text: item['information-text'] || [],
-    links: item['information-link'] || [],
+    'information-text': item['information-text'] || [],
+    'information-link': item['information-link'] || [],
   }));
 
   return {
