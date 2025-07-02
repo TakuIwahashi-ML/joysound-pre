@@ -11,7 +11,7 @@
 - **フレームワーク:** Next.js 15.x (App Router)
 - **言語:** TypeScript
 - **状態管理:** Redux（Redux Toolkit）
-- **スタイリング:** Tailwind CSS
+- **スタイリング:** Tailwind CSS v4（※設定ファイル不要、PostCSS統合による自動設定）
 - **CMS:** Kuroco
 - **テスト:** Jest, React Testing Library
 - **バリデーション:** zod
@@ -24,7 +24,7 @@
 - **コンポーネント設計:** UI コンポーネントに関しては、Atomic Design を採用します。
 
 - `app/`: ルーティングとページコンポーネント。サーバーコンポーネントを基本とする。
-- `app/api/`： サーバサイドAPI群
+- `app/api/`： サーバサイドAPI群（next.js 標準fetch）
 - `components/atoms/`: Atomic Design の原子に該当する純粋な UI コンポーネント。
 - `components/molecules/`: Atomic Design の分子に該当する純粋な UI コンポーネント。
 - `components/organisms/`: Atomic Design の有機体に該当する純粋な UI コンポーネント。
@@ -33,41 +33,29 @@
 - `hooks/`: 再利用可能なカスタムフックを配置。
 - `layouts/`：レイアウトパターンを配置。各ページやディレクトリでこれを読み出して利用する。
 - `store/`：reduxで管理するsliceやapiを配置
-- `store/services/`：クライアントサイドAPI群
+- `store/services/`：クライアントサイドAPI群（RTK Query）
 
-※レイアウト切り替え例（ディレクトリやファイル名は未定）：
+## Redux Store の管理構造
 
 ```
-app/
-├── layouts/                     # レイアウトコンポーネント集約
-│   ├── PublicLayout.tsx        # 一般ユーザー向け
-│   ├── AuthLayout.tsx          # 認証済みユーザー向け
-│   ├── AdminLayout.tsx         # 管理者向け
-│   ├── CatalogLayout.tsx       # カタログ専用
-│   └── README.md               # このファイル
-├── (public)/
-│   └── layout.tsx              # PublicLayoutを使用
-├── (auth)/
-│   └── layout.tsx              # AuthLayoutを使用
-├── (admin)/
-│   └── layout.tsx              # AdminLayoutを使用
-├── (catalog)/
-│   └── layout.tsx              # CatalogLayoutを使用
-└── special-event/
-    └── page.tsx                # 個別ページでCatalogLayoutを直接使用
-```
-
-※redux storeの管理構造
 store/
 ├── features/
 │ ├── sample/ # sample機能slice
 │ ├── samle2/ # sample2機能slice
 │ └── etc....
 └── services/ # クライアントサイドAPI群
+```
+
+**命名規則:**
+
+- **Slice:** `[機能名]Slice.ts` (例: `authSlice.ts`)
+- **API:** `[機能名]Api.ts` (例: `musicApi.ts`)
+- **型定義:** `[機能名]Types.ts` (例: `authTypes.ts`)
+- **インターフェース:** `I[名前]` (例: `IUser`, `IMusicTrack`)
 
 # 主要な機能とロジック (Key Features and Logic)
 
-- **データ取得:** 既存のバックエンド API と、Kuroco CMS から API 経由でデータを取得します。クライアントはRedux(rtkQuery)で取得します。`store/services/`に実装されています。
+- **データ取得:** 既存のバックエンド API と、Kuroco CMS から API 経由でデータを取得します。サーバサイドはnext.jsの標準fetchを利用。クライアントサイドはRedux(rtkQuery)で取得します。
 - **認証:** 未実装です。（または、〇〇というライブラリで実装）
 - **状態管理:** グローバルな状態は Redux（Redux Toolkit）で管理します。ストアは`store/`ディレクトリにあります。
 
@@ -89,11 +77,48 @@ store/
 
 # 環境変数 (Environment Variables)
 
-- local：`.env.local`
-- production：`.env.production`
+## 設定ファイル
 
-**注意：実際のキーやパスワードなどの機密情報は絶対に記載しないでください。変数名とその役割だけを記述します。**
+- **開発環境:** `.env.local`
+- **本番環境:** `.env.production`
 
-- `NEXT_PUBLIC_SITE_URL`: サイトの公開 URL。
-- `KUROCO_API_KEY`: Kuroco CMS の API キー。
-- `REVALIDATION_SECRET_TOKEN`: オンデマンド ISR の Webhook を検証するためのシークレットトークン。
+**⚠️ セキュリティ注意:** 実際のキーやパスワードなどの機密情報は絶対に記載しないでください。
+
+## 環境変数一覧
+
+### 🌐 サイト設定
+
+| 変数名                 | 必須 | 説明            | 例                             |
+| ---------------------- | ---- | --------------- | ------------------------------ |
+| `NEXT_PUBLIC_SITE_URL` | ✅   | サイトの公開URL | `https://joysound.example.com` |
+
+### 🔌 Kuroco CMS 連携
+
+| 変数名                | 必須 | 説明                      | 例                               |
+| --------------------- | ---- | ------------------------- | -------------------------------- |
+| `KUROCO_API_BASE_URL` | ✅   | Kuroco CMS APIのベースURL | `https://your-kuroco.kuroco.app` |
+| `KUROCO_API_KEY`      | ✅   | Kuroco CMS API認証キー    | `your_secret_api_key`            |
+
+### ⚡ キャッシュ・ISR設定
+
+| 変数名                      | 必須 | 説明                          | 例                    |
+| --------------------------- | ---- | ----------------------------- | --------------------- |
+| `REVALIDATION_SECRET_TOKEN` | ✅   | オンデマンドISR用秘密トークン | `your_webhook_secret` |
+
+## 設定例テンプレート
+
+```bash
+# .env.local (開発環境用)
+NEXT_PUBLIC_SITE_URL=http://localhost:3000
+KUROCO_API_BASE_URL=https://dev.kuroco.app
+KUROCO_API_KEY=dev_api_key_here
+REVALIDATION_SECRET_TOKEN=dev_webhook_secret
+```
+
+```bash
+# .env.production (本番環境用)
+NEXT_PUBLIC_SITE_URL=https://joysound.example.com
+KUROCO_API_BASE_URL=https://prod.kuroco.app
+KUROCO_API_KEY=prod_api_key_here
+REVALIDATION_SECRET_TOKEN=prod_webhook_secret
+```
