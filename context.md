@@ -21,17 +21,20 @@
 
 # ディレクトリ構造の規約 (Directory Structure Conventions)
 
+## 基本方針
+
 - **コンポーネント設計:** UI コンポーネントに関しては、Atomic Design を採用します。
+- **ファイル命名:** PascalCase（コンポーネント）、camelCase（関数・変数）を使用
 
 - `app/`: ルーティングとページコンポーネント。サーバーコンポーネントを基本とする。
 - `app/api/`： サーバサイドAPI群（next.js 標準fetch）
+- `app/layouts/`：レイアウトパターンを配置。各ページやディレクトリでこれを読み出して利用する。
 - `components/atoms/`: Atomic Design の原子に該当する純粋な UI コンポーネント。
 - `components/molecules/`: Atomic Design の分子に該当する純粋な UI コンポーネント。
 - `components/organisms/`: Atomic Design の有機体に該当する純粋な UI コンポーネント。
 - `components/features/`: 特定の機能に特化した複合コンポーネント。
-- `lib/`: 共通のヘルパー関数や、Kuroco の API クライアントなどを配置。
+- `lib/`: 共通のヘルパー関数のユーティリティ
 - `hooks/`: 再利用可能なカスタムフックを配置。
-- `layouts/`：レイアウトパターンを配置。各ページやディレクトリでこれを読み出して利用する。
 - `store/`：reduxで管理するsliceやapiを配置
 - `store/services/`：クライアントサイドAPI群（RTK Query）
 
