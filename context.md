@@ -125,3 +125,29 @@ KUROCO_API_BASE_URL=https://prod.kuroco.app
 KUROCO_API_KEY=prod_api_key_here
 REVALIDATION_SECRET_TOKEN=prod_webhook_secret
 ```
+
+#git commit メッセージルール
+
+## 機能・修正系
+
+feat: - 新機能の追加
+fix: - バグ修正
+hotfix: - 緊急バグ修正
+
+## ドキュメント・設定系
+
+docs: - ドキュメントの変更
+style: - コードフォーマット（機能に影響しない）
+refactor: - リファクタリング（機能変更なし）
+
+## テスト・ツール系
+
+test: - テストの追加・修正
+chore: - ビルドプロセス・補助ツールの変更
+ci: - CI設定ファイルの変更
+
+## パフォーマンス・リリース系
+
+perf: - パフォーマンス改善
+build: - ビルドシステムの変更
+revert: - 以前のコミットを取り消し
