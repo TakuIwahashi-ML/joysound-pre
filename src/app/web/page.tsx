@@ -1,5 +1,5 @@
 // import { ConsoleButton } from '@/components/features/sample/ConsoleButton';  // 未使用のため削除
-import TopLayout from './layouts/TopLayout';
+import TopLayout from '@/app/layouts/TopLayout';
 import Link from 'next/link';
 import ReactVersionChecker from '@/components/ReactVersionChecker';
 import GetSampleDataComponent from '@/components/features/sample/GetSampleDataComponent'; // 一時的に無効化
@@ -11,7 +11,7 @@ export default function HomePage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">トップメインコンテンツ</div>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <p className="mt-10">
-          <Link href="/samplePages">＞＞ サンプルページリンク</Link>
+          <Link href="/web/samplePages">＞＞ サンプルページリンク</Link>
         </p>
         <div>
           <GetSampleDataComponent />
