@@ -1,12 +1,13 @@
 import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
+  trailingSlash: true,
   async redirects() {
     return [
       {
         source: '/',
         destination: '/web/',
-        permanent: true, // 301リダイレクト（SEOに良い）
+        permanent: true,
       },
     ];
   },
