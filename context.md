@@ -37,6 +37,7 @@
 - `hooks/`: 再利用可能なカスタムフックを配置。
 - `store/`：reduxで管理するsliceやapiを配置
 - `store/services/`：クライアントサイドAPI群（RTK Query）
+- `middleware`：URL正規化とcanonical用のURL生成などを実行するミドルウェア。
 
 ## Redux Store の管理構造
 
