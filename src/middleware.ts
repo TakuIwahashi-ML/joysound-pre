@@ -1,36 +1,42 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
 
 export function middleware(request: NextRequest) {
-  const { pathname, search } = request.nextUrl;
+  const url = request.nextUrl.clone(); // 元のURLをコピー
 
-  // canonical URLのヘッダー設定のみ
-  const response = NextResponse.next();
+  // 保持したいクエリパラメータを定義（例：ページネーションなど）
+  const allowedParams = ['page', 'sort'];
 
-  // サイトのベースURLを環境変数から取得（デフォルトは現在のホスト）
-  const baseUrl =
-    process.env.NEXT_PUBLIC_SITE_URL || `${request.nextUrl.protocol}//${request.nextUrl.host}`;
-  const canonicalUrl = `${baseUrl}${pathname}${search}`;
+  // クエリパラメータを走査し、不要なものを削除
+  url.searchParams.forEach((value, key) => {
+    if (
+      !allowedParams.includes(key) &&
+      (key.startsWith('utm_') || key === 'fbclid' || key === 'gclid')
+    ) {
+      url.searchParams.delete(key);
+    }
+  });
 
-  // canonical URLをヘッダーに設定（ページ側で取得可能）
-  response.headers.set('x-canonical-url', canonicalUrl);
+  // レスポンスヘッダーを作成
+  const requestHeaders = new Headers(request.headers);
 
-  // 開発時のみログ出力
-  if (process.env.NODE_ENV === 'development') {
-    console.log('✅ [Middleware] Path：', pathname);
-  }
+  // 正規化したURLをカスタムヘッダー 'x-canonical-url' に設定
+  requestHeaders.set('x-canonical-url', url.toString());
+
+  // 次の処理に進むためのレスポンスを生成し、カスタムヘッダーを付与
+  const response = NextResponse.next({
+    request: {
+      headers: requestHeaders,
+    },
+  });
 
   return response;
 }
 
+// middlewareを適用するパスを指定
 export const config = {
   matcher: [
-    /*
-     * Match all request paths except for the ones starting with:
-     * - api (API routes)
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     */
+    // 静的ファイルやAPIルートなどを除外
     '/((?!api|_next/static|_next/image|favicon.ico).*)',
   ],
 };
