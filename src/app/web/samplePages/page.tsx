@@ -1,4 +1,7 @@
-import { type IInformation, getInformationData } from '@/app/api/kuroco/information/route';
+import { type IInformation, getInformationData } from '@/app/api/kuroco/information';
+
+// キャッシュ設定（オンデマンドISR用）
+export const revalidate = 86400; // 24時間
 
 // メインページコンポーネント（サーバーサイドレンダリング）
 export default async function SamplePagesPage() {

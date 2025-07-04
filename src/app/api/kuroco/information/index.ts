@@ -1,8 +1,5 @@
 // Kuroco CMS Information API
-import { fetchKurocoAPI } from '..';
-
-// エンドポイント定数
-const INFORMATION_ENDPOINT = '/rcms-api/1/information';
+import { fetchKurocoAPI } from '../index';
 
 // APIレスポンスとページ側で共通使用するInformation型
 export interface IInformation {
@@ -19,7 +16,7 @@ export async function getInformationData(): Promise<{
   data: IInformation[];
   error?: string;
 }> {
-  const result = await fetchKurocoAPI<KurocoInformationResponse>(INFORMATION_ENDPOINT, {
+  const result = await fetchKurocoAPI<KurocoInformationResponse>('/rcms-api/1/information', {
     list: [],
   });
 
