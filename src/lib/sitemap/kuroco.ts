@@ -60,7 +60,7 @@ class KurocoClient {
       },
       // Next.js 15のキャッシュ設定
       next: {
-        revalidate: 3600, // 1時間キャッシュ
+        revalidate: 86400, // 24時間キャッシュ（オンデマンドISR用）
       },
     });
 

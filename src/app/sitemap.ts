@@ -29,5 +29,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }
 }
 
-// キャッシュ設定
-export const revalidate = 3600; // 1時間
+// キャッシュ設定（オンデマンドISR用）
+export const revalidate = 86400; // 24時間（最大値）

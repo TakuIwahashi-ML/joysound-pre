@@ -36,7 +36,7 @@ export async function fetchKurocoAPI<T>(
       },
       // Next.js 15のキャッシュ設定
       next: {
-        revalidate: options.revalidate ?? 3600, // デフォルト1時間キャッシュ
+        revalidate: options.revalidate ?? 86400, // デフォルト24時間キャッシュ（オンデマンドISR用）
       },
     });
 
@@ -46,6 +46,7 @@ export async function fetchKurocoAPI<T>(
     }
 
     const data = await response.json();
+    console.log('✅️Kuroco API Response:', data);
     return { data };
   } catch (error) {
     console.error('Kuroco API Error:', error);

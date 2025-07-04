@@ -1,0 +1,109 @@
+{* Kurocoの「オペレーション」>「カスタム処理」で設定するwebhookコード *}
+
+
+{* Kuroco カスタム処理 - ISR Revalidation Webhook *}
+{* トリガー: コンテンツ更新後 *}
+
+{* Webhook URLの設定 *}
+{assign var="webhook_url" value="https://young-mugs-buy.loca.lt/api/revalidate"}
+
+{* デバッグログ - コンテンツ情報を確認 *}
+{logger msg1="Content Debug" msg2="Content ID: `$content.id`" msg3="Content Status: `$content.status`"}
+
+{* イベントタイプの判定 *}
+{if $content.status == "created"}
+    {assign var="event_type" value="content_created"}
+{elseif $content.status == "updated"}
+    {assign var="event_type" value="content_updated"}
+{elseif $content.status == "deleted"}
+    {assign var="event_type" value="content_deleted"}
+{else}
+    {assign var="event_type" value="content_updated"}
+{/if}
+
+{* ペイロードの構築 *}
+{assign var="contents" value=array()}
+
+{if $event_type == "content_deleted"}
+    {* 削除時のペイロード *}
+    {assign var="contents.deleted" value=array()}
+    {* 複数の方法でIDを取得 *}
+    {if $content.id}
+        {assign var="contents.deleted.id" value=$content.id}
+    {elseif $content.content_id}
+        {assign var="contents.deleted.id" value=$content.content_id}
+    {elseif $content.article_id}
+        {assign var="contents.deleted.id" value=$content.article_id}
+    {elseif $content.articleId}
+        {assign var="contents.deleted.id" value=$content.articleId}
+    {elseif $content.article_id}
+        {assign var="contents.deleted.id" value=$content.article_id}
+    {else}
+        {assign var="contents.deleted.id" value="unknown"}
+    {/if}
+{else}
+    {* 作成・更新時のペイロード *}
+    {assign var="contents.new" value=array()}
+    {* 複数の方法でIDを取得 *}
+    {if $content.id}
+        {assign var="contents.new.id" value=$content.id}
+    {elseif $content.content_id}
+        {assign var="contents.new.id" value=$content.content_id}
+    {elseif $content.article_id}
+        {assign var="contents.new.id" value=$content.article_id}
+    {elseif $content.articleId}
+        {assign var="contents.new.id" value=$content.articleId}
+    {elseif $content.article_id}
+        {assign var="contents.new.id" value=$content.article_id}
+    {else}
+        {assign var="contents.new.id" value="unknown"}
+    {/if}
+    
+    {* タイトルが存在する場合のみ追加 *}
+    {if isset($content.title) && $content.title}
+        {assign var="contents.new.title" value=$content.title}
+    {/if}
+    
+    {* カテゴリーIDが存在する場合のみ追加 *}
+    {if isset($content.category_id) && $content.category_id}
+        {assign var="contents.new.category_id" value=$content.category_id}
+    {/if}
+    
+    {* 更新日時が存在する場合のみ追加 *}
+    {if isset($content.updated_at) && $content.updated_at}
+        {assign var="contents.new.updated_at" value=$content.updated_at}
+    {/if}
+{/if}
+
+{* デバッグログ - ペイロード内容を確認 *}
+{logger msg1="Payload Debug" msg2="Contents: `$contents|json_encode`"}
+
+{* 完全なペイロードを構築 *}
+{assign var="payload" value=array()}
+{assign var="payload.event_type" value=$event_type}
+{assign var="payload.content_type" value="information"}
+{assign var="payload.contents" value=$contents}
+
+{* JSONエンコード *}
+{assign var="json_payload" value=$payload|json_encode}
+
+{* デバッグ用ログ *}
+{logger msg1="JSON Payload" msg2=$json_payload}
+
+{* HTTPリクエストの送信 *}
+{api
+    endpoint=$webhook_url
+    method="POST"
+    var=response
+    status_var=status
+    headers="Content-Type: application/json"
+    body=$json_payload
+}
+
+{* ログ出力 *}
+{logger msg1="ISR Revalidation Webhook" msg2="Event: `$event_type`" msg3="Content Type: information" msg4="Status: `$status`" msg5="Response: `$response`"}
+
+{* エラーハンドリング *}
+{if $status != 200}
+    {logger msg1="Webhook Error" msg2="Status: `$status`" msg3="Response: `$response`"}
+{/if}
