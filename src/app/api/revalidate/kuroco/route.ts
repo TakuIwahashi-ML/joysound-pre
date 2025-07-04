@@ -9,15 +9,58 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { revalidatePath } from 'next/cache';
 
+// トークン検証関数
+const isValidToken = (token: string | null): boolean => {
+  const expectedToken = process.env.KUROCO_API_KEY;
+
+  if (!expectedToken) {
+    console.log('✅️ [Security] KUROCO_API_KEY not configured');
+    return false;
+  }
+
+  if (!token) {
+    console.log('✅️ [Security] No token provided');
+    return false;
+  }
+
+  const isValid = token === expectedToken;
+  console.log('✅️ [Security] Token verification:', {
+    provided: token.substring(0, 8) + '...',
+    match: isValid,
+  });
+
+  return isValid;
+};
+
 export async function POST(request: NextRequest) {
   console.log('✅️ === Revalidate API Called ===');
   console.log('✅️ Timestamp:', new Date().toISOString());
 
-  // セキュリティのため、実際には署名検証などを行ってください
-  // const signature = request.headers.get('x-kuroco-signature');
-  // if (!isValidSignature(signature, ...)) {
-  //   return NextResponse.json({ message: 'Invalid signature' }, { status: 401 });
-  // }
+  // トークン検証（強制的に有効化）
+  const token =
+    request.headers.get('x-kuroco-token') ||
+    request.headers.get('authorization')?.replace('Bearer ', '') ||
+    // Kurocoの仕様に合わせて、content-typeヘッダーからトークンを抽出
+    request.headers
+      .get('content-type')
+      ?.match(/x-kuroco-token:\s*([^;]+)/)?.[1]
+      ?.trim() ||
+    null;
+
+  // 環境変数が設定されていない場合はエラー
+  const expectedToken = process.env.KUROCO_API_KEY;
+  if (!expectedToken) {
+    console.log('✅️ [Security] KUROCO_API_KEY not configured');
+    return NextResponse.json({ message: 'Webhook token not configured' }, { status: 500 });
+  }
+
+  // トークン検証を実行
+  if (!isValidToken(token)) {
+    console.log('✅️ [Security] Invalid token');
+    return NextResponse.json({ message: 'Invalid token' }, { status: 401 });
+  }
+
+  console.log('✅️ [Security] Token verified successfully');
 
   try {
     const body = await request.json();

@@ -2,7 +2,10 @@
 {* トリガー: コンテンツ更新後 *}
 
 {* Webhook URLの設定 *}
-{assign var="webhook_url" value="https://yellow-nights-appear.loca.lt/api/revalidate/kuroco"}
+{assign var="webhook_url" value="https://hip-flies-burn.loca.lt/api/revalidate/kuroco/"}
+
+{* APIトークンの設定 *}
+{assign var="api_token" value="your-actual-kuroco-api-key-here"}
 
 {* イベントタイプの判定 *}
 {if $content.status == "deleted"}
@@ -37,13 +40,13 @@
     {assign var="payload.contents.new.id" value=$content_id}
 {/if}
 
-{* HTTPリクエストの送信 *}
+{* HTTPリクエストの送信（トークン付き） *}
 {api
     endpoint=$webhook_url
     method="POST"
     var=response
     status_var=status
-    headers="Content-Type: application/json"
+    headers="Content-Type: application/json; x-kuroco-token: $api_token"
     body=$payload|json_encode
 }
 
