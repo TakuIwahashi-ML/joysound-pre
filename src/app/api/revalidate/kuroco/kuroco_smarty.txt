@@ -1,0 +1,53 @@
+{* Kuroco カスタム処理 - ISR Revalidation Webhook *}
+{* トリガー: コンテンツ更新後 *}
+
+{* Webhook URLの設定 *}
+{assign var="webhook_url" value="https://yellow-nights-appear.loca.lt/api/revalidate/kuroco"}
+
+{* イベントタイプの判定 *}
+{if $content.status == "deleted"}
+    {assign var="event_type" value="content_deleted"}
+{else}
+    {assign var="event_type" value="content_updated"}
+{/if}
+
+{* コンテンツIDの取得 *}
+{if $content.id}
+    {assign var="content_id" value=$content.id}
+{elseif $content.content_id}
+    {assign var="content_id" value=$content.content_id}
+{elseif $content.article_id}
+    {assign var="content_id" value=$content.article_id}
+{else}
+    {assign var="content_id" value="unknown"}
+{/if}
+
+{* ペイロードの構築 *}
+{assign var="payload" value=array()}
+{assign var="payload.event_type" value=$event_type}
+{assign var="payload.content_type" value="information"}
+
+{if $event_type == "content_deleted"}
+    {assign var="payload.contents" value=array()}
+    {assign var="payload.contents.deleted" value=array()}
+    {assign var="payload.contents.deleted.id" value=$content_id}
+{else}
+    {assign var="payload.contents" value=array()}
+    {assign var="payload.contents.new" value=array()}
+    {assign var="payload.contents.new.id" value=$content_id}
+{/if}
+
+{* HTTPリクエストの送信 *}
+{api
+    endpoint=$webhook_url
+    method="POST"
+    var=response
+    status_var=status
+    headers="Content-Type: application/json"
+    body=$payload|json_encode
+}
+
+{* エラーハンドリング *}
+{if $status != 200}
+    {logger msg1="Webhook Error" msg2="Status: `$status`" msg3="Response: `$response`"}
+{/if}
