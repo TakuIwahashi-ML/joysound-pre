@@ -2,10 +2,10 @@
 {* トリガー: コンテンツ更新後 *}
 
 {* Webhook URLの設定 *}
-{assign var="webhook_url" value="https://hip-flies-burn.loca.lt/api/revalidate/kuroco/"}
+{assign var="webhook_url" value=$smarty.const.WEBHOOK_URL|cat:"/api/revalidate/kuroco/"}
 
 {* APIトークンの設定 *}
-{assign var="api_token" value="your-actual-kuroco-api-key-here"}
+{assign var="api_token" value=$smarty.const.API_TOKEN}
 
 {* イベントタイプの判定 *}
 {if $content.status == "deleted"}
@@ -40,7 +40,8 @@
     {assign var="payload.contents.new.id" value=$content_id}
 {/if}
 
-{* HTTPリクエストの送信（トークン付き） *}
+{* HTTPリクエストの送信（ヘッダーを分離） *}
+{* 方法1: セミコロンで区切る *}
 {api
     endpoint=$webhook_url
     method="POST"
@@ -52,5 +53,7 @@
 
 {* エラーハンドリング *}
 {if $status != 200}
-    {logger msg1="Webhook Error" msg2="Status: `$status`" msg3="Response: `$response`"}
+    {logger msg1="Webhook Error" msg2="Status: `$status`" msg3="Response: `$response`" msg4="Token: `$api_token`"}
+{else}
+    {logger msg1="Webhook Success" msg2="Status: `$status`" msg3="Response: `$response`"}
 {/if}
