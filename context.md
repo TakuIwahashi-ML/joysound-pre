@@ -105,9 +105,9 @@ store/
 
 ### ⚡ キャッシュ・ISR設定
 
-| 変数名                      | 必須 | 説明                          | 例                    |
-| --------------------------- | ---- | ----------------------------- | --------------------- |
-| `REVALIDATION_SECRET_TOKEN` | ✅   | オンデマンドISR用秘密トークン | `your_webhook_secret` |
+| 変数名                       | 必須 | 説明                             | 例                    |
+| ---------------------------- | ---- | -------------------------------- | --------------------- |
+| `SITEMAP_REVALIDATION_TOKEN` | ✅   | サイトマップ再検証用秘密トークン | `your_sitemap_secret` |
 
 ## 設定例テンプレート
 
@@ -116,7 +116,7 @@ store/
 NEXT_PUBLIC_SITE_URL=http://localhost:3000
 KUROCO_API_BASE_URL=https://dev.kuroco.app
 KUROCO_API_KEY=dev_api_key_here
-REVALIDATION_SECRET_TOKEN=dev_webhook_secret
+SITEMAP_REVALIDATION_TOKEN=dev_sitemap_secret
 ```
 
 ```bash
@@ -124,7 +124,7 @@ REVALIDATION_SECRET_TOKEN=dev_webhook_secret
 NEXT_PUBLIC_SITE_URL=https://joysound.example.com
 KUROCO_API_BASE_URL=https://prod.kuroco.app
 KUROCO_API_KEY=prod_api_key_here
-REVALIDATION_SECRET_TOKEN=prod_webhook_secret
+SITEMAP_REVALIDATION_TOKEN=prod_sitemap_secret
 ```
 
 #git commit メッセージルール

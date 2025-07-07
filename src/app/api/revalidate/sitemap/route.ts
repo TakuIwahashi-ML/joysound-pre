@@ -5,11 +5,11 @@ export async function POST(request: NextRequest) {
   try {
     // 認証トークンの検証
     const authHeader = request.headers.get('authorization');
-    const expectedToken = process.env.REVALIDATION_SECRET_TOKEN;
+    const expectedToken = process.env.SITEMAP_REVALIDATION_TOKEN;
 
     if (!expectedToken) {
       return NextResponse.json(
-        { error: 'Revalidation secret token not configured' },
+        { error: 'Sitemap revalidation token not configured' },
         { status: 500 }
       );
     }

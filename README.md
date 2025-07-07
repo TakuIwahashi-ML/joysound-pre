@@ -29,8 +29,8 @@ pnpm dev
 # サイトのベースURL
 NEXT_PUBLIC_SITE_URL=https://your-domain.com
 
-# オンデマンドISR用のシークレットトークン（将来のCMS連携用）
-REVALIDATION_SECRET_TOKEN=your-secret-token
+# サイトマップ再検証用のシークレットトークン
+SITEMAP_REVALIDATION_TOKEN=your-secret-token
 ```
 
 ## 📁 プロジェクト構成
