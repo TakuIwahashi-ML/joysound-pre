@@ -30,26 +30,30 @@ export async function fetchKurocoAPI<T>(
       });
     }
 
-    // プレビュートークンがある場合は、プレビュー用のヘッダーを追加
+    // 基本ヘッダーの設定
     const headers: Record<string, string> = {
       'X-RCMS-API-ACCESS-TOKEN': process.env.KUROCO_API_KEY || '',
       'Content-Type': 'application/json',
     };
 
+    // プレビュートークンがある場合は、プレビュー用のヘッダーを追加
     if (options.previewToken) {
       headers['X-RCMS-API-PREVIEW-TOKEN'] = options.previewToken;
     }
 
+    // リクエストを送信
     const response = await fetch(apiUrl.toString(), {
       headers,
       // プレビューモードの場合はキャッシュを無効化
       next: options.previewToken
         ? { revalidate: 0 }
         : {
+            // デフォルトでは24時間キャッシュ
             revalidate: options.revalidate ?? 86400,
           },
     });
 
+    // エラーハンドリング
     if (!response.ok) {
       console.error('Kuroco API Error:', response.status, response.statusText);
       const errorText = await response.text();
@@ -57,6 +61,7 @@ export async function fetchKurocoAPI<T>(
       throw new Error(`Kuroco APIからデータを取得できませんでした (${response.status})`);
     }
 
+    // レスポンスをJSON形式でパース
     const data = await response.json();
     return { data };
   } catch (error) {

@@ -1,7 +1,7 @@
 // Kuroco CMS Information API
 import { fetchKurocoAPI, normalizeKurocoResponse } from '../index';
 
-// APIレスポンスとページ側で共通使用するInformation型
+// APIレスポンスとページ側で共通使用するInformation型のインターフェース
 export interface IInformation {
   'information-text': string[];
   'information-link': string[];
@@ -45,6 +45,7 @@ export async function getInformationData(previewToken?: string): Promise<{
     apiParams.preview_token = previewToken;
   }
 
+  // 🎯 Kuroco API呼び出し（共通関数を使用）
   const result = await fetchKurocoAPI<KurocoInformationResponse>(
     apiEndpoint,
     { list: [] },
@@ -54,6 +55,7 @@ export async function getInformationData(previewToken?: string): Promise<{
     }
   );
 
+  // 🎯 エラーハンドリング
   if (result.error) {
     return {
       data: [],
