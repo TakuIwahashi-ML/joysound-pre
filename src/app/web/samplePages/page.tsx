@@ -1,12 +1,20 @@
 import { type IInformation, getInformationData } from '@/app/api/kuroco/information';
+import { initializePreviewMode, type IPreviewParams } from '@/lib/preview';
 
 // キャッシュ設定（オンデマンドISR用）
 export const revalidate = 86400; // 24時間
 
 // メインページコンポーネント（サーバーサイドレンダリング）
-export default async function SamplePagesPage() {
-  // 🎯 統合版：1つの関数呼び出しでエラーハンドリング完了
-  const { data: informationData, error } = await getInformationData();
+export default async function SamplePagesPage({
+  searchParams,
+}: {
+  searchParams: Promise<IPreviewParams>;
+}) {
+  // 🎯 共通のプレビューモード初期化処理
+  const previewToken = await initializePreviewMode(searchParams);
+
+  // 🎯 プレビューモード対応版：プレビュートークンを直接渡して下書きデータを取得
+  const { data: informationData, error, isPreview } = await getInformationData(previewToken);
 
   return (
     <div className="container mx-auto px-4 py-8">

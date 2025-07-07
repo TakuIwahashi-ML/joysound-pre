@@ -38,7 +38,6 @@ export async function fetchKurocoAPI<T>(
 
     if (options.previewToken) {
       headers['X-RCMS-API-PREVIEW-TOKEN'] = options.previewToken;
-      console.log('✅️ [Preview] Using preview token for draft data');
     }
 
     const response = await fetch(apiUrl.toString(), {
@@ -53,11 +52,12 @@ export async function fetchKurocoAPI<T>(
 
     if (!response.ok) {
       console.error('Kuroco API Error:', response.status, response.statusText);
+      const errorText = await response.text();
+      console.error('Error response body:', errorText);
       throw new Error(`Kuroco APIからデータを取得できませんでした (${response.status})`);
     }
 
     const data = await response.json();
-    console.log('✅️Kuroco API Response:', data);
     return { data };
   } catch (error) {
     console.error('Kuroco API Error:', error);

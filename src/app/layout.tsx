@@ -3,6 +3,8 @@ import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
 import { ReduxProviders } from '@/providers';
 import { headers } from 'next/headers';
+import PreviewBanner from '@/components/features/preview/PreviewBanner';
+import { Suspense } from 'react';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -43,7 +45,12 @@ export default function RootLayout({
         suppressHydrationWarning
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <ReduxProviders>{children}</ReduxProviders>
+        <ReduxProviders>
+          <Suspense fallback={null}>
+            <PreviewBanner />
+          </Suspense>
+          {children}
+        </ReduxProviders>
       </body>
     </html>
   );
