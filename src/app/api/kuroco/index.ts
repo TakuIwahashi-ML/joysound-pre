@@ -1,6 +1,6 @@
 // Kuroco CMS API共通基盤
 
-// 🎯 統合版：エラーハンドリング内蔵のKuroco API呼び出し関数（プレビューモード対応）
+// 🎯 Kuroco API呼び出し関数（プレビューモード対応）
 export async function fetchKurocoAPI<T>(
   endpoint: string,
   fallbackValue: T,
@@ -66,4 +66,22 @@ export async function fetchKurocoAPI<T>(
       error: error instanceof Error ? error.message : '内部サーバーエラーが発生しました',
     };
   }
+}
+
+// 🎯 Kuroco APIレスポンス構造を統一する共通関数
+export function normalizeKurocoResponse<T>(
+  data: any,
+  isPreviewMode: boolean = false
+): { list: T[] } {
+  // プレビューエンドポイントの場合、detailsプロパティをlist形式に変換
+  if (isPreviewMode && data && data.details) {
+    const detailsItem = data.details;
+    return {
+      ...data,
+      list: [detailsItem],
+    };
+  }
+
+  // 通常のレスポンス構造をそのまま返す
+  return data;
 }

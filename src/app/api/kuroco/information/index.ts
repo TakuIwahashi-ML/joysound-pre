@@ -1,5 +1,5 @@
 // Kuroco CMS Information API
-import { fetchKurocoAPI } from '../index';
+import { fetchKurocoAPI, normalizeKurocoResponse } from '../index';
 
 // APIレスポンスとページ側で共通使用するInformation型
 export interface IInformation {
@@ -62,46 +62,11 @@ export async function getInformationData(previewToken?: string): Promise<{
     };
   }
 
-  // プレビューエンドポイントの場合、detailsプロパティをlist形式に変換
-  if (isPreviewMode && result.data && (result.data as any).details) {
-    const detailsItem = (result.data as any).details as any;
-    const convertedData = {
-      ...result.data,
-      list: [detailsItem],
-    };
-    result.data = convertedData;
-  }
-
-  // listが存在しない場合のエラーハンドリング
-  if (!result.data || !result.data.list) {
-    // プレビューエンドポイントの場合、単一アイテムが返される可能性
-    if (isPreviewMode && result.data) {
-      const singleItem = result.data as any;
-      if (singleItem && typeof singleItem === 'object') {
-        const filteredData: IInformation[] = [
-          {
-            'information-text': singleItem['information-text'] || [],
-            'information-link': singleItem['information-link'] || [],
-          },
-        ];
-
-        return {
-          data: filteredData,
-          error: undefined,
-          isPreview: true,
-        };
-      }
-    }
-
-    return {
-      data: [],
-      error: 'APIレスポンスの形式が正しくありません',
-      isPreview: isPreviewMode,
-    };
-  }
+  // 🎯 レスポンス構造を統一
+  const normalizedData = normalizeKurocoResponse<IInformation>(result.data, isPreviewMode);
 
   // 🎯 必要なデータのみを抽出（名前はそのまま維持）
-  const filteredData: IInformation[] = result.data.list.map((item) => ({
+  const filteredData: IInformation[] = normalizedData.list.map((item) => ({
     'information-text': item['information-text'] || [],
     'information-link': item['information-link'] || [],
   }));
