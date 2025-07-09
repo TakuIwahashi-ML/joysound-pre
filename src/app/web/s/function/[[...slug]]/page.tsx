@@ -57,27 +57,41 @@ export default async function FunctionPage({ params, searchParams }: FunctionPag
     }))
   );
 
-  // dir_nameとdir_name2でフィルタリング
-  const matchedFunction = result.data.find((item) => {
-    const itemDirName = item.dir_name || '';
-    const itemDirName2 = item.dir_name2 || '';
+  // プレビューモード時は、プレビューデータを直接使用
+  let matchedFunction;
 
-    // デバッグ用：各アイテムのマッチング結果をログ出力
-    const isMatch =
-      dirName2 === null
-        ? itemDirName === dirName && (itemDirName2 === '' || itemDirName2 === null)
-        : itemDirName === dirName && itemDirName2 === dirName2;
-
-    console.log('Matching check:', {
-      itemDirName,
-      itemDirName2,
+  if (result.isPreview) {
+    // プレビューモード時は、プレビューデータを直接使用
+    matchedFunction = result.data[0];
+    console.log('Preview mode: Using preview data directly:', {
+      dir_name: matchedFunction?.dir_name,
+      dir_name2: matchedFunction?.dir_name2,
       requestedDirName: dirName,
       requestedDirName2: dirName2,
-      isMatch,
     });
+  } else {
+    // 通常モード時は、URLパラメータでフィルタリング
+    matchedFunction = result.data.find((item) => {
+      const itemDirName = item.dir_name || '';
+      const itemDirName2 = item.dir_name2 || '';
 
-    return isMatch;
-  });
+      // デバッグ用：各アイテムのマッチング結果をログ出力
+      const isMatch =
+        dirName2 === null
+          ? itemDirName === dirName && (itemDirName2 === '' || itemDirName2 === null)
+          : itemDirName === dirName && itemDirName2 === dirName2;
+
+      console.log('Matching check:', {
+        itemDirName,
+        itemDirName2,
+        requestedDirName: dirName,
+        requestedDirName2: dirName2,
+        isMatch,
+      });
+
+      return isMatch;
+    });
+  }
 
   // マッチするデータが見つからない場合は404
   if (!matchedFunction) {
@@ -111,6 +125,21 @@ export default async function FunctionPage({ params, searchParams }: FunctionPag
             <p className="text-yellow-800">
               <strong>プレビューモード:</strong> このページはプレビュー表示です。
             </p>
+            {matchedFunction && (
+              <div className="mt-2 text-sm">
+                <p>
+                  <strong>プレビューデータ:</strong>
+                </p>
+                <ul className="list-disc list-inside">
+                  <li>dir_name: {matchedFunction.dir_name}</li>
+                  <li>dir_name2: {matchedFunction.dir_name2 || '空'}</li>
+                </ul>
+                <p className="mt-1 text-xs">
+                  ※
+                  プレビューモードでは、固定URL（/web/s/function/preview）でアクセスしても、プレビューデータが表示されます。
+                </p>
+              </div>
+            )}
           </div>
         )}
       </div>
