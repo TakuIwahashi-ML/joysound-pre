@@ -19,21 +19,12 @@ export default async function FunctionPage({ params, searchParams }: FunctionPag
     notFound();
   }
 
-  // slugからdir_nameとdir_name2を抽出
+  // URLパラメータからdir_nameとdir_name2を抽出
   const dirName = slug[0];
   const dirName2 = slug[1] || null;
 
   // Kuroco APIからデータを取得
   const result = await getFunctionData(preview_token);
-
-  // デバッグ用ログ
-  console.log('Function API result:', {
-    error: result.error,
-    dataLength: result.data.length,
-    isPreview: result.isPreview,
-    requestedDirName: dirName,
-    requestedDirName2: dirName2,
-  });
 
   if (result.error) {
     console.error('Function data fetch error:', result.error);
@@ -46,52 +37,19 @@ export default async function FunctionPage({ params, searchParams }: FunctionPag
     notFound();
   }
 
-  // デバッグ用：全データをログ出力
-  console.log('Raw API response:', JSON.stringify(result.data, null, 2));
-  console.log(
-    'All function data:',
-    result.data.map((item) => ({
-      dir_name: item.dir_name,
-      dir_name2: item.dir_name2,
-      text: item.text,
-    }))
-  );
+  // URLパラメータでフィルタリング（通常モードとプレビューモードで共通）
+  const matchedFunction = result.data.find((item) => {
+    const itemDirName = item.dir_name || '';
+    const itemDirName2 = item.dir_name2 || '';
 
-  // プレビューモード時は、プレビューデータを直接使用
-  let matchedFunction;
+    // デバッグ用：各アイテムのマッチング結果をログ出力
+    const isMatch =
+      dirName2 === null
+        ? itemDirName === dirName && (itemDirName2 === '' || itemDirName2 === null)
+        : itemDirName === dirName && itemDirName2 === dirName2;
 
-  if (result.isPreview) {
-    // プレビューモード時は、プレビューデータを直接使用
-    matchedFunction = result.data[0];
-    console.log('Preview mode: Using preview data directly:', {
-      dir_name: matchedFunction?.dir_name,
-      dir_name2: matchedFunction?.dir_name2,
-      requestedDirName: dirName,
-      requestedDirName2: dirName2,
-    });
-  } else {
-    // 通常モード時は、URLパラメータでフィルタリング
-    matchedFunction = result.data.find((item) => {
-      const itemDirName = item.dir_name || '';
-      const itemDirName2 = item.dir_name2 || '';
-
-      // デバッグ用：各アイテムのマッチング結果をログ出力
-      const isMatch =
-        dirName2 === null
-          ? itemDirName === dirName && (itemDirName2 === '' || itemDirName2 === null)
-          : itemDirName === dirName && itemDirName2 === dirName2;
-
-      console.log('Matching check:', {
-        itemDirName,
-        itemDirName2,
-        requestedDirName: dirName,
-        requestedDirName2: dirName2,
-        isMatch,
-      });
-
-      return isMatch;
-    });
-  }
+    return isMatch;
+  });
 
   // マッチするデータが見つからない場合は404
   if (!matchedFunction) {
@@ -136,7 +94,7 @@ export default async function FunctionPage({ params, searchParams }: FunctionPag
                 </ul>
                 <p className="mt-1 text-xs">
                   ※
-                  プレビューモードでは、固定URL（/web/s/function/preview）でアクセスしても、プレビューデータが表示されます。
+                  プレビューモードでは、URLパラメータで指定されたコンテンツの下書きデータが表示されます。
                 </p>
               </div>
             )}
