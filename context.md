@@ -152,3 +152,34 @@ SITEMAP_REVALIDATION_TOKEN=prod_sitemap_secret
 - **perf:** パフォーマンス改善
 - **build:** ビルドシステムの変更
 - **revert:** 以前のコミットを取り消し
+
+## ランキングコンテンツのディレクトリ構成
+
+/web/karaoke/ranking/配下をダイナミックルートで実装する。
+
+- デイリーランキング
+  - 統合: https://www.joysound.com/web/karaoke/ranking/all
+
+- 週間ランキング
+  - 統合: https://www.joysound.com/web/karaoke/ranking/all/weekly/
+  - アニメ: https://www.joysound.com/web/karaoke/ranking/anime/weekly
+  - ボーカロイド: https://www.joysound.com/web/karaoke/ranking/vocaloid/weekly
+  - 演歌: https://www.joysound.com/web/karaoke/ranking/enka/weekly
+  - 洋楽: https://www.joysound.com/web/karaoke/ranking/foreign/weekly
+  - アーティストhttps://www.joysound.com/web/karaoke/ranking/artist/weekly
+
+- 月間ランキング（最新）
+  - 統合: https://www.joysound.com/web/karaoke/ranking/all/monthly
+  - アニメ: https://www.joysound.com/web/karaoke/ranking/anime/monthly
+  - ボーカロイド: https://www.joysound.com/web/karaoke/ranking/vocaloid/monthly
+  - 演歌: https://www.joysound.com/web/karaoke/ranking/enka/monthly
+  - 洋楽: https://www.joysound.com/web/karaoke/ranking/foreign/monthly
+  - アーティスト: https://www.joysound.com/web/karaoke/ranking/artist/monthly
+
+- 月間ランキング（年月指定）
+  - 統合: https://www.joysound.com/web/karaoke/ranking/all/monthly/202505
+  - アニメ: https://www.joysound.com/web/karaoke/ranking/anime/monthly/202505
+  - ボーカロイド: https://www.joysound.com/web/karaoke/ranking/vocaloid/monthly/202505
+  - 演歌: https://www.joysound.com/web/karaoke/ranking/enka/monthly/202505
+  - 洋楽: https://www.joysound.com/web/karaoke/ranking/foreign/monthly/202505
+  - アーティスト: https://www.joysound.com/web/karaoke/ranking/artist/monthly/202505

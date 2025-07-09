@@ -11,7 +11,19 @@ export default function HomePage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">トップメインコンテンツ</div>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <p className="mt-10">
-          <Link href="/web/samplePages">＞＞ サンプルページリンク</Link>
+          <Link href="/web/samplePages">＞＞ インフォメーションページリンク</Link>
+        </p>
+        <p className="mt-10">
+          <Link href="/web/s/function/bunseki">＞＞ function/bunsekiページリンク</Link>
+        </p>
+        <p className="mt-10">
+          <Link href="/web/s/function/bunseki2">＞＞ function/bunseki2ページリンク</Link>
+        </p>
+        <p className="mt-10">
+          <Link href="/web/s/function/movie/movie">＞＞ function/movie/movieページリンク</Link>
+        </p>
+        <p className="mt-10">
+          <Link href="/web/s/function/movie/movie2">＞＞ function/movie/movie2ページリンク</Link>
         </p>
         <div>
           <GetSampleDataComponent />
