@@ -77,29 +77,6 @@ export default async function FunctionPage({ params, searchParams }: FunctionPag
             <strong>text:</strong> {matchedFunction.text || 'N/A'}
           </div>
         </div>
-
-        {result.isPreview && (
-          <div className="mt-6 p-4 bg-yellow-100 border border-yellow-400 rounded">
-            <p className="text-yellow-800">
-              <strong>プレビューモード:</strong> このページはプレビュー表示です。
-            </p>
-            {matchedFunction && (
-              <div className="mt-2 text-sm">
-                <p>
-                  <strong>プレビューデータ:</strong>
-                </p>
-                <ul className="list-disc list-inside">
-                  <li>dir_name: {matchedFunction.dir_name}</li>
-                  <li>dir_name2: {matchedFunction.dir_name2 || '空'}</li>
-                </ul>
-                <p className="mt-1 text-xs">
-                  ※
-                  プレビューモードでは、URLパラメータで指定されたコンテンツの下書きデータが表示されます。
-                </p>
-              </div>
-            )}
-          </div>
-        )}
       </div>
     </div>
   );
